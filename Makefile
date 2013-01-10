@@ -27,7 +27,7 @@ distclean: clean devclean relclean ballclean
 	./rebar delete-deps
 
 generate:
-	./rebar generate
+	./rebar generate $(OVERLAY_VARS)
 
 
 TEST_LOG_FILE := eunit.log
