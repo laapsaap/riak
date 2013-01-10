@@ -1,7 +1,7 @@
 REPO            ?= riak
 PKG_NAME        ?= riak
 PKG_REVISION    ?= $(shell git describe --tags)
-PKG_VERSION     ?= $(shell git describe --tags | tr - .)
+PKG_VERSION     ?= $(shell git describe --tags | sed -e 's/^$(PKG_NAME)-//' | tr - .)
 PKG_ID           = $(PKG_NAME)-$(PKG_VERSION)
 PKG_BUILD        = 1
 BASE_DIR         = $(shell pwd)
@@ -160,13 +160,9 @@ cleanplt:
 #                                 Hash of commit:    g1170096
 REPO_TAG 	:= $(shell git describe --tags)
 
-# Split off repo name
-# Changes to 1.0.3 or 1.1.0pre1-27-g1170096 from example above
-REVISION 	?= $(shell echo $(REPO_TAG) | sed -e 's/^$(REPO)-//')
-
 # Primary version identifier, strip off commmit information
 # Changes to 1.0.3 or 1.1.0pre1 from example above
-MAJOR_VERSION	?= $(shell echo $(REVISION) | sed -e 's/\([0-9.]*\)-.*/\1/')
+MAJOR_VERSION	?= $(shell echo $(PKG_VERSION) | sed -e 's/\([0-9.]*\)-.*/\1/')
 
 
 ##
@@ -195,13 +191,13 @@ get_dist_deps = mkdir distdir && \
 
 
 # Name resulting directory & tar file based on current status of the git tag
-# If it is a tagged release (REVISION == MAJOR_VERSION), use the toplevel
+# If it is a tagged release (PKG_VERSION == MAJOR_VERSION), use the toplevel
 #   tag as the package name, otherwise generate a unique hash of all the
 #   dependencies revisions to make the package name unique.
 #   This enables the toplevel repository package to change names
 #   when underlying dependencies change.
 NAME_HASH = $(shell git hash-object distdir/$(CLONEDIR)/$(MANIFEST_FILE) 2>/dev/null | cut -c 1-8)
-ifeq ($(REVISION), $(MAJOR_VERSION))
+ifeq ($(PKG_VERSION), $(MAJOR_VERSION))
 DISTNAME := $(REPO_TAG)
 else
 DISTNAME = $(REPO)-$(MAJOR_VERSION)-$(NAME_HASH)
