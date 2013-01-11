@@ -40,7 +40,7 @@ test: deps compile testclean
 yz-setup: deps compile
 	rm -rf deps/riak_kv
 	git clone git://github.com/basho/riak_kv.git deps/riak_kv
-	(cd deps/riak_kv && git checkout rz-yokozuna-3)
+	(cd deps/riak_kv && git checkout yz-merge)
 
 ##
 ## Release targets
